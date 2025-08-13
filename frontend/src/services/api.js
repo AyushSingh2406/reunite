@@ -68,7 +68,7 @@ import axios from 'axios';
 
 // Create a central Axios instance
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://reunite-vh55.onrender.com/api',
   // DO NOT set a global Content-Type header here.
   // Axios will automatically set it to 'application/json' for objects
   // and 'multipart/form-data' for FormData.
