@@ -31,23 +31,53 @@
 
 // src/services/api.js
 
+
+
+// import axios from 'axios';
+
+// const api = axios.create({
+//   baseURL: '/api',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// });
+
+// api.interceptors.request.use(
+//   (config) => {
+//     // --- ADD THESE LINES FOR DEBUGGING ---
+//     console.log('--- Axios Interceptor Fired ---');
+//     const token = localStorage.getItem('token');
+//     console.log('Token Found in localStorage:', token);
+//     // -----------------------------------------
+
+//     if (token) {
+//       config.headers['x-auth-token'] = token;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
+// export default api;
+
+
+
 import axios from 'axios';
 
+// Create a central Axios instance
 const api = axios.create({
   baseURL: '/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // DO NOT set a global Content-Type header here.
+  // Axios will automatically set it to 'application/json' for objects
+  // and 'multipart/form-data' for FormData.
 });
 
+// Use an interceptor to add the auth token to every request
 api.interceptors.request.use(
   (config) => {
-    // --- ADD THESE LINES FOR DEBUGGING ---
-    console.log('--- Axios Interceptor Fired ---');
     const token = localStorage.getItem('token');
-    console.log('Token Found in localStorage:', token);
-    // -----------------------------------------
-
     if (token) {
       config.headers['x-auth-token'] = token;
     }
