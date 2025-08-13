@@ -52,20 +52,52 @@
 // module.exports = router;
 
 
+// const express = require('express');
+// const router = express.Router();
+// const auth = require('../middleware/authMiddleware');
+// const { addItem, getAllItems, claimItem, resolveItem } = require('../controllers/itemController');
+
+// // This line imports the upload middleware, which fixes the error.
+// const upload = require('../middleware/uploadMiddleware');
+
+// // This line uses the imported 'upload' middleware.
+// router.post('/', auth, upload.single('image'), addItem);
+
+// // Other routes
+// router.get('/', getAllItems);
+// router.post('/:id/claim', auth, claimItem);
+// router.post('/:id/resolve', auth, resolveItem);
+
+// module.exports = router;// (Removed commented duplicate block)
+
+
 const express = require('express');
 const router = express.Router();
+
+// Import middleware and controllers
 const auth = require('../middleware/authMiddleware');
-const { addItem, getAllItems, claimItem, resolveItem } = require('../controllers/itemController');
-
-// This line imports the upload middleware, which fixes the error.
 const upload = require('../middleware/uploadMiddleware');
+const { 
+    addItem, 
+    getAllItems, 
+    claimItem, 
+    resolveItem 
+} = require('../controllers/itemController');
 
-// This line uses the imported 'upload' middleware.
+// Define the route for creating a new item with an image upload
+// Path: POST /api/items/
 router.post('/', auth, upload.single('image'), addItem);
 
-// Other routes
+// Define the route for getting all non-resolved items
+// Path: GET /api/items/
 router.get('/', getAllItems);
+
+// Define the route for claiming an item
+// Path: POST /api/items/:id/claim
 router.post('/:id/claim', auth, claimItem);
+
+// Define the route for resolving a claimed item
+// Path: POST /api/items/:id/resolve
 router.post('/:id/resolve', auth, resolveItem);
 
-module.exports = router;// (Removed commented duplicate block)
+module.exports = router;
