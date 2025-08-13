@@ -20,33 +20,52 @@
 // module.exports = router;
 
 
-// backend/routes/items.js
+// // backend/routes/items.js
+// const express = require('express');
+// const router = express.Router();
+// const auth = require('../middleware/authMiddleware');
+
+// // --- THIS IS THE CORRECTED LINE ---
+// // We've added 'resolveItem' to the list of imported functions.
+// const { addItem, getAllItems, claimItem, resolveItem } = require('../controllers/itemController');
+// router.post('/', auth, upload.single('image'), addItem);
+// // @route   POST api/items
+// // @desc    Add a new lost or found item
+// // @access  Private
+// router.post('/', auth, addItem);
+
+// // @route   GET api/tools
+// // @desc    Get all items
+// // @access  Public
+// router.get('/', getAllItems);
+
+// // @route   POST api/items/:id/claim
+// // @desc    Claim a lost item
+// // @access  Private
+// router.post('/:id/claim', auth, claimItem);
+
+// // @route   POST api/items/:id/resolve
+// // @desc    Mark an item as resolved
+// // @access  Private
+// router.post('/:id/resolve', auth, resolveItem);
+
+// module.exports = router;
+
+
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/authMiddleware');
-
-// --- THIS IS THE CORRECTED LINE ---
-// We've added 'resolveItem' to the list of imported functions.
 const { addItem, getAllItems, claimItem, resolveItem } = require('../controllers/itemController');
 
-// @route   POST api/items
-// @desc    Add a new lost or found item
-// @access  Private
-router.post('/', auth, addItem);
+// This line imports the upload middleware, which fixes the error.
+const upload = require('../middleware/uploadMiddleware');
 
-// @route   GET api/tools
-// @desc    Get all items
-// @access  Public
+// This line uses the imported 'upload' middleware.
+router.post('/', auth, upload.single('image'), addItem);
+
+// Other routes
 router.get('/', getAllItems);
-
-// @route   POST api/items/:id/claim
-// @desc    Claim a lost item
-// @access  Private
 router.post('/:id/claim', auth, claimItem);
-
-// @route   POST api/items/:id/resolve
-// @desc    Mark an item as resolved
-// @access  Private
 router.post('/:id/resolve', auth, resolveItem);
 
-module.exports = router;
+module.exports = router;// (Removed commented duplicate block)
