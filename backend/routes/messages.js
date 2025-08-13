@@ -18,10 +18,7 @@ const router = express.Router();
 const auth = require('../middleware/authMiddleware');
 const { getMessages, sendMessage } = require('../controllers/messageController');
 
-// GET /api/messages/:itemId
 router.get('/:itemId', auth, getMessages);
-
-// POST /api/messages/:itemId
 router.post('/:itemId', auth, sendMessage);
 
 module.exports = router;
