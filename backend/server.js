@@ -69,36 +69,69 @@ mongoose.connect(MONGO_URI)
   });
 
 // --- API Routes ---
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/items', require('./routes/items'));
-app.use('/api/admin', require('./routes/admin')); 
-app.use('/api/messages', require('./routes/messages'));
+// app.use('/api/auth', require('./routes/auth'));
+// app.use('/api/items', require('./routes/items'));
+// app.use('/api/admin', require('./routes/admin')); 
+// app.use('/api/messages', require('./routes/messages'));
+
+
+try {
+  app.use('/api/auth', require('./routes/auth'));
+  console.log("✅ Loaded /api/auth routes");
+} catch (err) {
+  console.error("❌ Error loading /api/auth:", err);
+}
+
+try {
+  app.use('/api/items', require('./routes/items'));
+  console.log("✅ Loaded /api/items routes");
+} catch (err) {
+  console.error("❌ Error loading /api/items:", err);
+}
+
+try {
+  app.use('/api/admin', require('./routes/admin')); 
+  console.log("✅ Loaded /api/admin routes");
+} catch (err) {
+  console.error("❌ Error loading /api/admin:", err);
+}
+
+try {
+  app.use('/api/messages', require('./routes/messages'));
+  console.log("✅ Loaded /api/messages routes");
+} catch (err) {
+  console.error("❌ Error loading /api/messages:", err);
+}
 
 // --- Serve Static Assets in Production ---
 // This code runs only when you deploy your app to a hosting service
-if (process.env.NODE_ENV === 'production') {
-  // Set the static folder where the React build lives
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+// if (process.env.NODE_ENV === 'production') {
+//   // Set the static folder where the React build lives
+//   app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-  // For any request that doesn't match an API route, send back the main index.html file
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
-  });
+//   // For any request that doesn't match an API route, send back the main index.html file
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
+//   });
+// }
+
+
+if (process.env.NODE_ENV === 'production') {
+  const staticPath = path.join(__dirname, '../frontend/build');
+  console.log("Serving static from:", staticPath);
+
+  app.use(express.static(staticPath));
+
+  console.log("Registering catch-all route: '*'");
+
+app.get(/(.*)/, (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
+});
+
+
 }
 
 // --- Server Initialization ---
 const PORT = process.env.PORT || 5000;
-const listRoutes = (app) => {
-  app._router.stack.forEach((middleware) => {
-    if (middleware.route) {
-      console.log("Route:", middleware.route.path);
-    } else if (middleware.name === 'router') {
-      middleware.handle.stack.forEach((handler) => {
-        if (handler.route) console.log("Route:", handler.route.path);
-      });
-    }
-  });
-};
 
-listRoutes(app);
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
