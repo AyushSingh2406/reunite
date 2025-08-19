@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'reunite-app',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'tiff', 'webp'], // 👈 added webp
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'tiff', 'webp' , 'svg'], // 👈 added webp
     transformation: [{ width: 500, height: 500, crop: 'limit' }]
   },
 });
