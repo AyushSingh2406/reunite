@@ -68,3 +68,41 @@ const itemService = {
 
 
 export default itemService;
+
+// import api from './api'; // Import the central api instance with the interceptor
+
+// const getItems = () => {
+//   return api.get('/items');
+// };
+
+// const createItem = (itemData) => {
+//   // If itemData is FormData (has a file), set multipart headers
+//   if (itemData instanceof FormData) {
+//     return api.post('/items', itemData, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//   }
+//   // fallback for JSON payload (not used in your forms now)
+//   return api.post('/items', itemData);
+// };
+
+// // Claim an item
+// const claimItem = (id) => {
+//   return api.post(`/items/${id}/claim`);
+// };
+
+// // Resolve an item
+// const resolveItem = (id) => {
+//   return api.post(`/items/${id}/resolve`);
+// };
+
+// const itemService = {
+//   getItems,
+//   createItem,
+//   claimItem,
+//   resolveItem,
+// };
+
+// export default itemService;

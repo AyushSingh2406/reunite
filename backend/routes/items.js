@@ -73,13 +73,31 @@
 
 const express = require('express');
 const router = express.Router();
+
+// Import middleware and controllers
 const auth = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
-const { addItem, getAllItems, claimItem, resolveItem } = require('../controllers/itemController');
+const { 
+    addItem, 
+    getAllItems, 
+    claimItem, 
+    resolveItem 
+} = require('../controllers/itemController');
 
+// Define the route for creating a new item with an image upload
+// Path: POST /api/items/
 router.post('/', auth, upload.single('image'), addItem);
+
+// Define the route for getting all non-resolved items
+// Path: GET /api/items/
 router.get('/', getAllItems);
+
+// Define the route for claiming an item
+// Path: POST /api/items/:id/claim
 router.post('/:id/claim', auth, claimItem);
+
+// Define the route for resolving a claimed item
+// Path: POST /api/items/:id/resolve
 router.post('/:id/resolve', auth, resolveItem);
 
 module.exports = router;

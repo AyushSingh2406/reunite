@@ -14,11 +14,12 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'reunite-app', // A folder name in your Cloudinary account
-    allowed_formats: ['jpg', 'png', 'jpeg'],
+    folder: 'reunite-app',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'bmp', 'tiff', 'webp'], // 👈 added webp
     transformation: [{ width: 500, height: 500, crop: 'limit' }]
   },
 });
+
 
 const upload = multer({ storage: storage });
 
