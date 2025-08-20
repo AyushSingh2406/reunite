@@ -35,6 +35,8 @@
 // src/services/authService.js
 // src/services/authService.js
 
+
+
 import api from './api';
 
 const signup = (userData) => {
@@ -44,7 +46,7 @@ const signup = (userData) => {
 const login = async (email, password) => {
   const response = await api.post('/auth/login', { email, password });
   
-  // This is the critical fix. It saves the token and the full user object.
+  // This saves the token and the full user object to localStorage
   if (response.data.token && response.data.user) {
     localStorage.setItem('token', response.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -55,6 +57,15 @@ const login = async (email, password) => {
 const logout = () => {
   localStorage.removeItem('user');
   localStorage.removeItem('token');
+};
+
+const updateProfile = async (userData) => {
+    const response = await api.put('/auth/profile', userData);
+    // After a successful update, update the user in localStorage
+    if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+    return response.data;
 };
 
 const getCurrentUser = () => {
@@ -68,6 +79,7 @@ const authService = {
   login,
   logout,
   getCurrentUser,
+  updateProfile,
 };
 
 export default authService;
