@@ -36,7 +36,6 @@
 // src/services/authService.js
 
 
-
 import api from './api';
 
 const signup = (userData) => {
@@ -64,7 +63,7 @@ const getCurrentUser = () => {
   return null;
 };
 
-// --- NEW: Function to fetch user data using the token ---
+// Function to fetch user data using the token
 const getMe = async () => {
     const response = await api.get('/auth/me');
     return response.data;
@@ -83,8 +82,9 @@ const authService = {
   login,
   logout,
   getCurrentUser,
-  getMe, // Add the new function
+  getMe,
   updateProfile,
 };
 
 export default authService;
+
