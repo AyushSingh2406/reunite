@@ -46,7 +46,6 @@ const signup = (userData) => {
 const login = async (email, password) => {
   const response = await api.post('/auth/login', { email, password });
   
-  // This saves the token and the full user object to localStorage
   if (response.data.token && response.data.user) {
     localStorage.setItem('token', response.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -57,15 +56,6 @@ const login = async (email, password) => {
 const logout = () => {
   localStorage.removeItem('user');
   localStorage.removeItem('token');
-};
-
-const updateProfile = async (userData) => {
-    const response = await api.put('/auth/profile', userData);
-    // After a successful update, update the user in localStorage
-    if (response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
-    return response.data;
 };
 
 const getCurrentUser = () => {
@@ -80,13 +70,21 @@ const getMe = async () => {
     return response.data;
 };
 
+const updateProfile = async (userData) => {
+    const response = await api.put('/auth/profile', userData);
+    if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+    return response.data;
+};
+
 const authService = {
   signup,
   login,
   logout,
   getCurrentUser,
-  updateProfile,
   getMe, // Add the new function
+  updateProfile,
 };
 
 export default authService;

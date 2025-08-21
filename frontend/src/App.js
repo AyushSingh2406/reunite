@@ -186,7 +186,6 @@ export default function App() {
     const [allItems, setAllItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
-    const [dashboardResetKey, setDashboardResetKey] = useState(0);
 
     useEffect(() => {
         const initializeApp = async () => {
@@ -197,17 +196,15 @@ export default function App() {
                 // This is a Google login callback
                 localStorage.setItem('token', token);
                 try {
-                    // Fetch the full user details from the backend using the token
-                    const userData = await authService.getMe(); 
+                    const userData = await authService.getMe(); // Fetch full user details
                     if (userData) {
-                        // Save the user details, set the user state, and switch to the dashboard
-                        localStorage.setItem('user', JSON.stringify(userData));
+                        localStorage.setItem('user', JSON.stringify(userData)); // Save the user
                         setUser(userData);
                         setPage('dashboard');
                     }
                 } catch (error) {
                     console.error("Failed to log in with Google token:", error);
-                    authService.logout(); // Clean up if the token is invalid
+                    authService.logout(); // Clean up if it fails
                 }
                 // Clean the token from the URL without reloading the page
                 window.history.replaceState({}, document.title, window.location.pathname);
@@ -300,20 +297,8 @@ export default function App() {
         }, 500);
     };
 
-    useEffect(() => {
-        const handleKeyDown = (e) => { if (e.key === 'Escape' && modalState.show) handleCloseModal(); };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [modalState.show]);
-
     const handleGoHome = () => setPage('home');
-    const handleGoDashboard = () => {
-        if (page === 'dashboard') {
-            setDashboardResetKey(prev => prev + 1);
-        } else {
-            setPage('dashboard');
-        }
-    };
+    const handleGoDashboard = () => setPage('dashboard');
 
     return (
         <>
@@ -328,9 +313,8 @@ export default function App() {
             {page === 'home' && <HomePage onAuthClick={() => handleShowModal('auth')} />}
             {page === 'dashboard' && user && (
                 user.role === 'admin'
-                    ? <AdminDashboard key={dashboardResetKey} user={user} />
+                    ? <AdminDashboard user={user} />
                     : <UserDashboard
-                        key={dashboardResetKey}
                         user={user}
                         onLogout={handleLogout}
                         handleShowModal={handleShowModal}
