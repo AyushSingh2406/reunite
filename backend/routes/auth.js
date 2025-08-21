@@ -82,7 +82,7 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
         { expiresIn: '1h' },
         (err, token) => {
             if (err) throw err;
-            res.redirect(`https://reunite-lnds.netlify.app/?token=${token}`);
+            res.redirect(`https://reunitelnds.netlify.app/?token=${token}`);
         }
     );
 });
