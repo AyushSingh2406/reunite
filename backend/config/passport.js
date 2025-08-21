@@ -5,7 +5,8 @@ module.exports = function(passport) {
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/api/auth/google/callback'
+        // This is the fix: Use the full URL of your deployed backend
+        callbackURL: 'https://reunite-vh55.onrender.com/api/auth/google/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
         try {
@@ -25,7 +26,6 @@ module.exports = function(passport) {
                     googleId: profile.id,
                     username: profile.displayName,
                     email: profile.emails[0].value,
-                    // Password is not needed for Google OAuth
                 });
                 user = await newUser.save();
                 done(null, user);
