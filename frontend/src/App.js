@@ -188,6 +188,44 @@ export default function App() {
     const [error, setError] = useState('');
     const [dashboardResetKey, setDashboardResetKey] = useState(0);
 
+    useEffect(() => {
+        const initializeApp = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (token) {
+                // This is a Google login callback
+                localStorage.setItem('token', token);
+                try {
+                    // Fetch the full user details from the backend using the token
+                    const userData = await authService.getMe(); 
+                    if (userData) {
+                        // Save the user details, set the user state, and switch to the dashboard
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        setUser(userData);
+                        setPage('dashboard');
+                    }
+                } catch (error) {
+                    console.error("Failed to log in with Google token:", error);
+                    authService.logout(); // Clean up if the token is invalid
+                }
+                // Clean the token from the URL without reloading the page
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                // This is a normal page load, restore session from localStorage
+                const currentUser = authService.getCurrentUser();
+                if (currentUser) {
+                    setUser(currentUser);
+                    setPage('dashboard');
+                }
+            }
+            
+            fetchItems();
+        };
+
+        initializeApp();
+    }, []);
+
     const fetchItems = () => {
         setIsLoading(true);
         itemService.getItems()
@@ -202,31 +240,6 @@ export default function App() {
                 console.error("Fetch Error:", err);
             });
     };
-
-    // This useEffect now handles both Google login callbacks and regular session restoration.
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-
-        if (token) {
-            // If a token is found in the URL, it's a Google login callback.
-            localStorage.setItem('token', token);
-            
-            // To get the full user object, we reload the page.
-            // The next time this component loads, the regular session check will find the user.
-            // We also clean the token from the URL.
-            window.location.href = '/'; 
-        } else {
-            // This is a normal page load. Check if a user is already logged in.
-            const currentUser = authService.getCurrentUser();
-            if (currentUser) {
-                setUser(currentUser);
-                setPage('dashboard');
-            }
-        }
-        
-        fetchItems();
-    }, []);
 
     const handleAuthSuccess = (data) => {
         setUser(data.user);

@@ -74,12 +74,19 @@ const getCurrentUser = () => {
   return null;
 };
 
+// --- NEW: Function to fetch user data using the token ---
+const getMe = async () => {
+    const response = await api.get('/auth/me');
+    return response.data;
+};
+
 const authService = {
   signup,
   login,
   logout,
   getCurrentUser,
   updateProfile,
+  getMe, // Add the new function
 };
 
 export default authService;
