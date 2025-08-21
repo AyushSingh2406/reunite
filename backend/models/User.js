@@ -1,6 +1,5 @@
 // const mongoose = require('mongoose');
 
-// // This defines the structure for user documents in your database
 // const UserSchema = new mongoose.Schema({
 //     username: { 
 //         type: String, 
@@ -19,28 +18,42 @@
 //         type: String, 
 //         required: true 
 //     },
-//       role: {
+//     role: {
 //         type: String,
 //         enum: ['user', 'admin'],
 //         default: 'user'
+//     },
+//     // --- NEW FIELDS ---
+//     collegeId: {
+//         type: String,
+//         trim: true,
+//         default: 'Not Set'
+//     },
+//     address: {
+//         type: String,
+//         trim: true,
+//         default: 'Not Set'
 //     }
 // }, { 
-//     timestamps: true // Adds createdAt and updatedAt timestamps automatically
+//     timestamps: true 
 // });
 
-// // The 'User' string is the name of the collection that will be created in the database
 // const User = mongoose.model('User', UserSchema);
 
 // module.exports = User;
 
+
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
+    googleId: {
+        type: String,
+    },
     username: { 
         type: String, 
         required: true, 
-        unique: true, 
         trim: true 
+        // We remove 'unique' because multiple Google users might have the same display name.
     },
     email: { 
         type: String, 
@@ -51,14 +64,14 @@ const UserSchema = new mongoose.Schema({
     },
     password: { 
         type: String, 
-        required: true 
+        // Password is not required if the user signs up with Google
+        required: function() { return !this.googleId; } 
     },
     role: {
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
     },
-    // --- NEW FIELDS ---
     collegeId: {
         type: String,
         trim: true,

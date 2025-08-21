@@ -1,142 +1,6 @@
 // import React, { useState, useEffect } from 'react';
 // import './App.css';
 // import itemService from './services/itemService';
-// import authService from './services/authService'; // Make sure this is imported
-
-// // Import components
-// import Header from './components/common/Header';
-// import Modal from './components/common/Modal';
-// import HomePage from './components/home/HomePage';
-// import UserDashboard from './components/dashboard/UserDashboard';
-// import AdminDashboard from './components/dashboard/AdminDashboard';
-// import AuthForm from './components/auth/AuthForm';
-// import LostItemForm from './components/dashboard/LostItemForm';
-// import FoundItemForm from './components/dashboard/FoundItemForm';
-
-// export default function App() {
-//     const [page, setPage] = useState('home');
-//     const [modalState, setModalState] = useState({ show: false, title: '', children: null, closing: false });
-//     const [user, setUser] = useState(null);
-//     const [allItems, setAllItems] = useState([]);
-//     const [isLoading, setIsLoading] = useState(true);
-//     const [error, setError] = useState('');
-
-//     const fetchItems = () => {
-//         setIsLoading(true);
-//         itemService.getItems()
-//             .then(response => {
-//                 setAllItems(response.data);
-//                 setError('');
-//                 setIsLoading(false);
-//             })
-//             .catch(err => {
-//                 setError('Failed to fetch items.');
-//                 setIsLoading(false);
-//                 console.error("Fetch Error:", err);
-//             });
-//     };
-
-//     // This effect correctly restores the user session on refresh
-//     useEffect(() => {
-//         const currentUser = authService.getCurrentUser();
-//         if (currentUser) {
-//             setUser(currentUser);
-//             setPage('dashboard');
-//         }
-//         fetchItems();
-//     }, []);
-    
-//     // This function is called after a successful login
-//     const handleAuthSuccess = (data) => {
-//         setUser(data.user);
-//         setPage('dashboard');
-//         handleCloseModal();
-//     };
-
-//     // --- THIS IS THE CORRECTED LOGOUT FUNCTION ---
-//     const handleLogout = () => {
-//         // This critical line removes the token and user from localStorage
-//         authService.logout(); 
-
-//         // These lines reset the application's state
-//         setUser(null);
-//         setPage('home');
-//     };
-
-//     const handleReportSubmitted = () => {
-//         handleCloseModal();
-//         fetchItems();
-//     };
-
-//     const handleShowModal = (type) => {
-//         let content;
-//         switch (type) {
-//             case 'lost':
-//                 content = { title: 'Report a Lost Item', children: <LostItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
-//                 break;
-//             case 'found':
-//                 content = { title: 'Post a Found Item', children: <FoundItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
-//                 break;
-//             case 'auth':
-//                 content = { title: null, children: <AuthForm onAuthSuccess={handleAuthSuccess} handleClose={handleCloseModal} /> };
-//                 break;
-//             default:
-//                 return;
-//         }
-//         setModalState({ show: true, closing: false, ...content });
-//     };
-
-//     const handleCloseModal = () => {
-//         setModalState(prev => ({ ...prev, closing: true }));
-//         setTimeout(() => {
-//             setModalState({ show: false, title: '', children: null, closing: false });
-//         }, 500);
-//     };
-
-//     useEffect(() => {
-//         const handleKeyDown = (e) => { if (e.key === 'Escape' && modalState.show) handleCloseModal(); };
-//         window.addEventListener('keydown', handleKeyDown);
-//         return () => window.removeEventListener('keydown', handleKeyDown);
-//     }, [modalState.show]);
-
-//     return (
-//         <>
-//             <Header
-//                 user={user}
-//                 onAuthClick={() => handleShowModal('auth')}
-//                 onLogout={handleLogout}
-//             />
-
-//             {page === 'home' && <HomePage onAuthClick={() => handleShowModal('auth')} />}
-//             {page === 'dashboard' && user && (
-//                 user.role === 'admin'
-//                     ? <AdminDashboard user={user} />
-//                     : <UserDashboard
-//                         user={user}
-//                         onLogout={handleLogout}
-//                         handleShowModal={handleShowModal}
-//                         items={allItems}
-//                         isLoading={isLoading}
-//                         error={error}
-//                       />
-//             )}
-
-//             <Modal
-//                 show={modalState.show || modalState.closing}
-//                 onClose={handleCloseModal}
-//                 title={modalState.title}
-//                 closing={modalState.closing}
-//             >
-//                 {modalState.children}
-//             </Modal>
-//         </>
-//     );
-// }
-
-
-// import React, { useState, useEffect } from 'react';
-// import './App.css';
-// import itemService from './services/itemService';
 // import authService from './services/authService';
 
 // // Import components
@@ -148,297 +12,7 @@
 // import AuthForm from './components/auth/AuthForm';
 // import LostItemForm from './components/dashboard/LostItemForm';
 // import FoundItemForm from './components/dashboard/FoundItemForm';
-
-// export default function App() {
-//     const [page, setPage] = useState('home');
-//     const [modalState, setModalState] = useState({ show: false, title: '', children: null, closing: false });
-//     const [user, setUser] = useState(null);
-//     const [allItems, setAllItems] = useState([]);
-//     const [isLoading, setIsLoading] = useState(true);
-//     const [error, setError] = useState('');
-
-//     const fetchItems = () => {
-//         setIsLoading(true);
-//         itemService.getItems()
-//             .then(response => {
-//                 setAllItems(response.data);
-//                 setError('');
-//                 setIsLoading(false);
-//             })
-//             .catch(err => {
-//                 setError('Failed to fetch items.');
-//                 setIsLoading(false);
-//                 console.error("Fetch Error:", err);
-//             });
-//     };
-
-//     useEffect(() => {
-//         const currentUser = authService.getCurrentUser();
-//         if (currentUser) {
-//             setUser(currentUser);
-//             setPage('dashboard');
-//         }
-//         fetchItems();
-//     }, []);
-    
-    
-//     const handleAuthSuccess = (data) => {
-//         setUser(data.user);
-//         setPage('dashboard');
-//         handleCloseModal();
-//     };
-
-//     const handleLogout = () => {
-//         authService.logout(); 
-//         setUser(null);
-//         setPage('home');
-//     };
-
-//     const handleReportSubmitted = () => {
-//         handleCloseModal();
-//         fetchItems();
-//     };
-
-//     const handleShowModal = (type) => {
-//         let content;
-//         switch (type) {
-//             case 'lost':
-//                 content = { title: 'Report a Lost Item', children: <LostItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
-//                 break;
-//             case 'found':
-//                 content = { title: 'Post a Found Item', children: <FoundItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
-//                 break;
-//             case 'auth':
-//                 content = { title: null, children: <AuthForm onAuthSuccess={handleAuthSuccess} handleClose={handleCloseModal} /> };
-//                 break;
-//             default:
-//                 return;
-//         }
-//         setModalState({ show: true, closing: false, ...content });
-//     };
-
-//     const handleCloseModal = () => {
-//         setModalState(prev => ({ ...prev, closing: true }));
-//         setTimeout(() => {
-//             setModalState({ show: false, title: '', children: null, closing: false });
-//         }, 500);
-//     };
-
-//     useEffect(() => {
-//         const handleKeyDown = (e) => { if (e.key === 'Escape' && modalState.show) handleCloseModal(); };
-//         window.addEventListener('keydown', handleKeyDown);
-//         return () => window.removeEventListener('keydown', handleKeyDown);
-//     }, [modalState.show]);
-
-//     // 👇 NEW: Handler to navigate to the Home page
-//     const handleGoHome = () => setPage('home');
-//     // 👇 NEW: Handler to navigate to the Dashboard page
-//     const handleGoDashboard = () => setPage('dashboard');
-
-//     return (
-//         <>
-//             <Header
-//                 user={user}
-//                 onAuthClick={() => handleShowModal('auth')}
-//                 onLogout={handleLogout}
-//                 // 👇 NEW: Pass the navigation handlers to the Header component
-//                 onGoHome={handleGoHome}
-//                 onGoDashboard={handleGoDashboard}
-//             />
-
-//             {page === 'home' && <HomePage onAuthClick={() => handleShowModal('auth')} />}
-//             {page === 'dashboard' && user && (
-//                 user.role === 'admin'
-//                     ? <AdminDashboard user={user} />
-//                     : <UserDashboard
-//                         user={user}
-//                         onLogout={handleLogout}
-//                         handleShowModal={handleShowModal}
-//                         items={allItems}
-//                         isLoading={isLoading}
-//                         error={error}
-//                       />
-//             )}
-
-//             <Modal
-//                 show={modalState.show || modalState.closing}
-//                 onClose={handleCloseModal}
-//                 title={modalState.title}
-//                 closing={modalState.closing}
-//             >
-//                 {modalState.children}
-//             </Modal>
-//         </>
-//     );
-// }
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import './App.css';
-// import itemService from './services/itemService';
-// import authService from './services/authService';
-
-// // Import components
-// import Header from './components/common/Header';
-// import Modal from './components/common/Modal';
-// import HomePage from './components/home/HomePage';
-// import UserDashboard from './components/dashboard/UserDashboard';
-// import AdminDashboard from './components/dashboard/AdminDashboard';
-// import AuthForm from './components/auth/AuthForm';
-// import LostItemForm from './components/dashboard/LostItemForm';
-// import FoundItemForm from './components/dashboard/FoundItemForm';
-// import EditProfileForm from './components/auth/EditProfileForm'; // 1. Import the new form
-
-
-// export default function App() {
-//     const [page, setPage] = useState('home');
-//     const [modalState, setModalState] = useState({ show: false, title: '', children: null, closing: false });
-//     const [user, setUser] = useState(null);
-//     const [allItems, setAllItems] = useState([]);
-//     const [isLoading, setIsLoading] = useState(true);
-//     const [error, setError] = useState('');
-//     const [dashboardResetKey, setDashboardResetKey] = useState(0); // 👈 NEW
-
-//     const fetchItems = () => {
-//         setIsLoading(true);
-//         itemService.getItems()
-//             .then(response => {
-//                 setAllItems(response.data);
-//                 setError('');
-//                 setIsLoading(false);
-//             })
-//             .catch(err => {
-//                 setError('Failed to fetch items.');
-//                 setIsLoading(false);
-//                 console.error("Fetch Error:", err);
-//             });
-//     };
-
-//     useEffect(() => {
-//         const currentUser = authService.getCurrentUser();
-//         if (currentUser) {
-//             setUser(currentUser);
-//             setPage('dashboard');
-//         }
-//         fetchItems();
-//     }, []);
-
-//     const handleAuthSuccess = (data) => {
-//         setUser(data.user);
-//         setPage('dashboard');
-//         handleCloseModal();
-//     };
-
-//     const handleLogout = () => {
-//         authService.logout(); 
-//         setUser(null);
-//         setPage('home');
-//     };
-
-//     const handleReportSubmitted = () => {
-//         handleCloseModal();
-//         fetchItems();
-//     };
-
-//     const handleShowModal = (type) => {
-//         let content;
-//         switch (type) {
-//             case 'lost':
-//                 content = { title: 'Report a Lost Item', children: <LostItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
-//                 break;
-//             case 'found':
-//                 content = { title: 'Post a Found Item', children: <FoundItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
-//                 break;
-//             case 'auth':
-//                 content = { title: null, children: <AuthForm onAuthSuccess={handleAuthSuccess} handleClose={handleCloseModal} /> };
-//                 break;
-//             default:
-//                 return;
-//         }
-//         setModalState({ show: true, closing: false, ...content });
-//     };
-
-//     const handleCloseModal = () => {
-//         setModalState(prev => ({ ...prev, closing: true }));
-//         setTimeout(() => {
-//             setModalState({ show: false, title: '', children: null, closing: false });
-//         }, 500);
-//     };
-
-//     useEffect(() => {
-//         const handleKeyDown = (e) => { if (e.key === 'Escape' && modalState.show) handleCloseModal(); };
-//         window.addEventListener('keydown', handleKeyDown);
-//         return () => window.removeEventListener('keydown', handleKeyDown);
-//     }, [modalState.show]);
-
-//     // 👇 Navigation Handlers
-//     const handleGoHome = () => setPage('home');
-//     const handleGoDashboard = () => {
-//         if (page === 'dashboard') {
-//             // Trigger a re-render/reset for dashboard content
-//             setDashboardResetKey(prev => prev + 1);
-//         } else {
-//             setPage('dashboard');
-//         }
-//     };
-
-//     return (
-//         <>
-//             <Header
-//                 user={user}
-//                 onAuthClick={() => handleShowModal('auth')}
-//                 onLogout={handleLogout}
-//                 onGoHome={handleGoHome}
-//                 onGoDashboard={handleGoDashboard}
-//             />
-
-//             {page === 'home' && <HomePage onAuthClick={() => handleShowModal('auth')} />}
-//             {page === 'dashboard' && user && (
-//                 user.role === 'admin'
-//                     ? <AdminDashboard key={dashboardResetKey} user={user} />
-//                     : <UserDashboard
-//                         key={dashboardResetKey} // 👈 forces dashboard to reset when same button clicked
-//                         user={user}
-//                         onLogout={handleLogout}
-//                         handleShowModal={handleShowModal}
-//                         items={allItems}
-//                         isLoading={isLoading}
-//                         error={error}
-//                       />
-//             )}
-
-//             <Modal
-//                 show={modalState.show || modalState.closing}
-//                 onClose={handleCloseModal}
-//                 title={modalState.title}
-//                 closing={modalState.closing}
-//             >
-//                 {modalState.children}
-//             </Modal>
-//         </>
-//     );
-// }
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import './App.css';
-// import itemService from './services/itemService';
-// import authService from './services/authService';
-
-// // Import components
-// import Header from './components/common/Header';
-// import Modal from './components/common/Modal';
-// import HomePage from './components/home/HomePage';
-// import UserDashboard from './components/dashboard/UserDashboard';
-// import AdminDashboard from './components/dashboard/AdminDashboard';
-// import AuthForm from './components/auth/AuthForm';
-// import LostItemForm from './components/dashboard/LostItemForm';
-// import FoundItemForm from './components/dashboard/FoundItemForm';
-// import EditProfileForm from './components/auth/EditProfileForm'; // 1. Import the new form
+// import EditProfileForm from './components/auth/EditProfileForm';
 
 // export default function App() {
 //     const [page, setPage] = useState('home');
@@ -479,9 +53,14 @@
 //         handleCloseModal();
 //     };
 
-//     // NEW: Handler for when the profile is successfully updated
+//     // This function is now more robust and guarantees a re-render.
 //     const handleProfileUpdateSuccess = (updatedUser) => {
-//         setUser(updatedUser); // Update the user state in App.js
+//         // Create a new user object by merging the old and new data.
+//         // This ensures React detects the change and updates the UI.
+//         setUser(prevUser => ({
+//             ...prevUser,
+//             ...updatedUser,
+//         }));
 //     };
 
 //     const handleLogout = () => {
@@ -507,7 +86,6 @@
 //             case 'auth':
 //                 content = { title: null, children: <AuthForm onAuthSuccess={handleAuthSuccess} handleClose={handleCloseModal} /> };
 //                 break;
-//             // NEW: Add a case for the edit profile modal
 //             case 'editProfile':
 //                 content = { 
 //                     title: null, 
@@ -625,12 +203,28 @@ export default function App() {
             });
     };
 
+    // This useEffect now handles both Google login callbacks and regular session restoration.
     useEffect(() => {
-        const currentUser = authService.getCurrentUser();
-        if (currentUser) {
-            setUser(currentUser);
-            setPage('dashboard');
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (token) {
+            // If a token is found in the URL, it's a Google login callback.
+            localStorage.setItem('token', token);
+            
+            // To get the full user object, we reload the page.
+            // The next time this component loads, the regular session check will find the user.
+            // We also clean the token from the URL.
+            window.location.href = '/'; 
+        } else {
+            // This is a normal page load. Check if a user is already logged in.
+            const currentUser = authService.getCurrentUser();
+            if (currentUser) {
+                setUser(currentUser);
+                setPage('dashboard');
+            }
         }
+        
         fetchItems();
     }, []);
 
@@ -640,10 +234,7 @@ export default function App() {
         handleCloseModal();
     };
 
-    // This function is now more robust and guarantees a re-render.
     const handleProfileUpdateSuccess = (updatedUser) => {
-        // Create a new user object by merging the old and new data.
-        // This ensures React detects the change and updates the UI.
         setUser(prevUser => ({
             ...prevUser,
             ...updatedUser,
