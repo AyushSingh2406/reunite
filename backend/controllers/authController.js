@@ -106,8 +106,8 @@ exports.signup = async (req, res) => {
         await user.save();
 
         // Send verification email
-        const verificationURL = `https://reunitelnds.netlify.app/verify/${verificationToken}`;
-        const message = `<p>Please verify your email by clicking this link: <a href="${verificationURL}">Verify Email</a></p><p>If you are testing locally, the URL is: ${req.protocol}://${req.get('host')}/api/auth/verify/${verificationToken}</p>`;
+        const verificationURL = `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/verify/${verificationToken}`;
+        const message = `<p>Please verify your email by clicking this link: <a href="${verificationURL}">Verify Email</a></p>`;
 
         await sendEmail({
             email: user.email,
@@ -122,7 +122,7 @@ exports.signup = async (req, res) => {
     }
 };
 
-// --- Verify Email Handler ---
+// --- Verify Email Handler (with Auto-Login) ---
 exports.verifyEmail = async (req, res) => {
     try {
         const user = await User.findOne({ verificationToken: req.params.token });
@@ -134,7 +134,13 @@ exports.verifyEmail = async (req, res) => {
         user.verificationToken = undefined;
         await user.save();
         
-        res.send('<h1>Success!</h1><p>Your email has been successfully verified. You can now close this tab and log in.</p>');
+        // Automatically log the user in by generating a token and redirecting
+        const payload = { user: { id: user.id } };
+        const token = jwt.sign(payload, 'THIS_IS_A_VERY_LONG_AND_SECRET_KEY_FOR_MY_APP_12345', { expiresIn: '1h' });
+
+        // Redirect to the frontend with the token
+        res.redirect(`https://reunitelnds.netlify.app/?token=${token}`);
+
     } catch (err) {
         console.error("Verify Email Error:", err);
         res.status(500).send('<h1>Error</h1><p>An error occurred during verification. Please try again later.</p>');
@@ -152,6 +158,10 @@ exports.login = async (req, res) => {
 
         if (!user.isVerified) {
             return res.status(401).json({ msg: 'Please verify your email before logging in.' });
+        }
+
+        if (!user.password) {
+            return res.status(400).json({ msg: 'Please log in using the method you originally signed up with (e.g., Google).' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -182,6 +192,20 @@ exports.login = async (req, res) => {
     } catch (err) {
         console.error("Login Error:", err);
         res.status(500).json({ msg: 'Server Error' });
+    }
+};
+
+// --- Get Current User Data ---
+exports.getMe = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+        res.json(user);
+    } catch (err) {
+        console.error("Get Me Error:", err);
+        res.status(500).send('Server Error');
     }
 };
 
@@ -267,4 +291,5 @@ exports.resetPassword = async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
 
