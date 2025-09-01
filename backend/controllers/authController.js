@@ -244,9 +244,12 @@ exports.updateProfile = async (req, res) => {
 // --- Forgot Password ---
 exports.forgotPassword = async (req, res) => {
     try {
+        // THIS IS THE FIX: We now correctly use req.body.email to get the string.
         const user = await User.findOne({ email: req.body.email });
         if (!user) {
-            return res.status(404).json({ msg: 'User with that email does not exist.' });
+            // We send a generic success message even if the user doesn't exist
+            // to prevent attackers from checking which emails are registered.
+            return res.status(200).json({ msg: 'If a user with that email exists, an OTP has been sent.' });
         }
 
         const resetToken = crypto.randomBytes(3).toString('hex').toUpperCase(); // 6-character OTP
@@ -291,5 +294,3 @@ exports.resetPassword = async (req, res) => {
         res.status(500).json({ msg: 'Server Error' });
     }
 };
-
-
