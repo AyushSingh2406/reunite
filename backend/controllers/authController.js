@@ -106,7 +106,7 @@ exports.signup = async (req, res) => {
         await user.save();
 
         // Send verification email
-        const verificationURL = `https://reunite-lnds.netlify.app/verify/${verificationToken}`;
+        const verificationURL = `https://reunitelnds.netlify.app/verify/${verificationToken}`;
         const message = `<p>Please verify your email by clicking this link: <a href="${verificationURL}">Verify Email</a></p><p>If you are testing locally, the URL is: ${req.protocol}://${req.get('host')}/api/auth/verify/${verificationToken}</p>`;
 
         await sendEmail({
