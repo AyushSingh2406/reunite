@@ -163,12 +163,188 @@
 
 
 
+// import React, { useState, useEffect } from 'react';
+// import './App.css';
+// import itemService from './services/itemService';
+// import authService from './services/authService';
+
+// // Import components
+// import Header from './components/common/Header';
+// import Modal from './components/common/Modal';
+// import HomePage from './components/home/HomePage';
+// import UserDashboard from './components/dashboard/UserDashboard';
+// import AdminDashboard from './components/dashboard/AdminDashboard';
+// import AuthForm from './components/auth/AuthForm';
+// import LostItemForm from './components/dashboard/LostItemForm';
+// import FoundItemForm from './components/dashboard/FoundItemForm';
+// import EditProfileForm from './components/auth/EditProfileForm';
+
+// export default function App() {
+//     const [page, setPage] = useState('home');
+//     const [modalState, setModalState] = useState({ show: false, title: '', children: null, closing: false });
+//     const [user, setUser] = useState(null);
+//     const [allItems, setAllItems] = useState([]);
+//     const [isLoading, setIsLoading] = useState(true);
+//     const [error, setError] = useState('');
+
+//     useEffect(() => {
+//         const initializeApp = async () => {
+//             const urlParams = new URLSearchParams(window.location.search);
+//             const token = urlParams.get('token');
+
+//             if (token) {
+//                 // This is a Google login callback
+//                 localStorage.setItem('token', token);
+//                 try {
+//                     const userData = await authService.getMe(); // Fetch full user details
+//                     if (userData) {
+//                         localStorage.setItem('user', JSON.stringify(userData)); // Save the user
+//                         setUser(userData);
+//                         setPage('dashboard');
+//                     }
+//                 } catch (error) {
+//                     console.error("Failed to log in with Google token:", error);
+//                     authService.logout(); // Clean up if it fails
+//                 }
+//                 // Clean the token from the URL without reloading the page
+//                 window.history.replaceState({}, document.title, window.location.pathname);
+//             } else {
+//                 // This is a normal page load, restore session from localStorage
+//                 const currentUser = authService.getCurrentUser();
+//                 if (currentUser) {
+//                     setUser(currentUser);
+//                     setPage('dashboard');
+//                 }
+//             }
+            
+//             fetchItems();
+//         };
+
+//         initializeApp();
+//     }, []);
+
+//     const fetchItems = () => {
+//         setIsLoading(true);
+//         itemService.getItems()
+//             .then(response => {
+//                 setAllItems(response.data);
+//                 setError('');
+//                 setIsLoading(false);
+//             })
+//             .catch(err => {
+//                 setError('Failed to fetch items.');
+//                 setIsLoading(false);
+//                 console.error("Fetch Error:", err);
+//             });
+//     };
+
+//     const handleAuthSuccess = (data) => {
+//         setUser(data.user);
+//         setPage('dashboard');
+//         handleCloseModal();
+//     };
+
+//     const handleProfileUpdateSuccess = (updatedUser) => {
+//         setUser(prevUser => ({
+//             ...prevUser,
+//             ...updatedUser,
+//         }));
+//     };
+
+//     const handleLogout = () => {
+//         authService.logout(); 
+//         setUser(null);
+//         setPage('home');
+//     };
+
+//     const handleReportSubmitted = () => {
+//         handleCloseModal();
+//         fetchItems();
+//     };
+
+//     const handleShowModal = (type) => {
+//         let content;
+//         switch (type) {
+//             case 'lost':
+//                 content = { title: 'Report a Lost Item', children: <LostItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
+//                 break;
+//             case 'found':
+//                 content = { title: 'Post a Found Item', children: <FoundItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
+//                 break;
+//             case 'auth':
+//                 content = { title: null, children: <AuthForm onAuthSuccess={handleAuthSuccess} handleClose={handleCloseModal} /> };
+//                 break;
+//             case 'editProfile':
+//                 content = { 
+//                     title: null, 
+//                     children: <EditProfileForm 
+//                                 user={user} 
+//                                 onUpdateSuccess={handleProfileUpdateSuccess} 
+//                                 handleClose={handleCloseModal} 
+//                               /> 
+//                 };
+//                 break;
+//             default:
+//                 return;
+//         }
+//         setModalState({ show: true, closing: false, ...content });
+//     };
+
+//     const handleCloseModal = () => {
+//         setModalState(prev => ({ ...prev, closing: true }));
+//         setTimeout(() => {
+//             setModalState({ show: false, title: '', children: null, closing: false });
+//         }, 500);
+//     };
+
+//     const handleGoHome = () => setPage('home');
+//     const handleGoDashboard = () => setPage('dashboard');
+
+//     return (
+//         <>
+//             <Header
+//                 user={user}
+//                 onAuthClick={() => handleShowModal('auth')}
+//                 onLogout={handleLogout}
+//                 onGoHome={handleGoHome}
+//                 onGoDashboard={handleGoDashboard}
+//             />
+
+//             {page === 'home' && <HomePage onAuthClick={() => handleShowModal('auth')} />}
+//             {page === 'dashboard' && user && (
+//                 user.role === 'admin'
+//                     ? <AdminDashboard user={user} />
+//                     : <UserDashboard
+//                         user={user}
+//                         onLogout={handleLogout}
+//                         handleShowModal={handleShowModal}
+//                         items={allItems}
+//                         isLoading={isLoading}
+//                         error={error}
+//                       />
+//             )}
+
+//             <Modal
+//                 show={modalState.show || modalState.closing}
+//                 onClose={handleCloseModal}
+//                 title={modalState.title}
+//                 closing={modalState.closing}
+//             >
+//                 {modalState.children}
+//             </Modal>
+//         </>
+//     );
+// }
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import itemService from './services/itemService';
 import authService from './services/authService';
 
-// Import components
+// Import all components, including the new password reset forms
 import Header from './components/common/Header';
 import Modal from './components/common/Modal';
 import HomePage from './components/home/HomePage';
@@ -178,6 +354,8 @@ import AuthForm from './components/auth/AuthForm';
 import LostItemForm from './components/dashboard/LostItemForm';
 import FoundItemForm from './components/dashboard/FoundItemForm';
 import EditProfileForm from './components/auth/EditProfileForm';
+import ForgotPasswordForm from './components/auth/ForgotPasswordForm';
+import ResetPasswordForm from './components/auth/ResetPasswordForm';
 
 export default function App() {
     const [page, setPage] = useState('home');
@@ -193,33 +371,28 @@ export default function App() {
             const token = urlParams.get('token');
 
             if (token) {
-                // This is a Google login callback
                 localStorage.setItem('token', token);
                 try {
-                    const userData = await authService.getMe(); // Fetch full user details
+                    const userData = await authService.getMe();
                     if (userData) {
-                        localStorage.setItem('user', JSON.stringify(userData)); // Save the user
+                        localStorage.setItem('user', JSON.stringify(userData));
                         setUser(userData);
                         setPage('dashboard');
                     }
                 } catch (error) {
                     console.error("Failed to log in with Google token:", error);
-                    authService.logout(); // Clean up if it fails
+                    authService.logout();
                 }
-                // Clean the token from the URL without reloading the page
                 window.history.replaceState({}, document.title, window.location.pathname);
             } else {
-                // This is a normal page load, restore session from localStorage
                 const currentUser = authService.getCurrentUser();
                 if (currentUser) {
                     setUser(currentUser);
                     setPage('dashboard');
                 }
             }
-            
             fetchItems();
         };
-
         initializeApp();
     }, []);
 
@@ -229,12 +402,13 @@ export default function App() {
             .then(response => {
                 setAllItems(response.data);
                 setError('');
-                setIsLoading(false);
             })
             .catch(err => {
                 setError('Failed to fetch items.');
-                setIsLoading(false);
                 console.error("Fetch Error:", err);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
@@ -252,7 +426,7 @@ export default function App() {
     };
 
     const handleLogout = () => {
-        authService.logout(); 
+        authService.logout();
         setUser(null);
         setPage('home');
     };
@@ -262,7 +436,8 @@ export default function App() {
         fetchItems();
     };
 
-    const handleShowModal = (type) => {
+    // This function now handles all modal types, including the password reset flow
+    const handleShowModal = (type, data = {}) => {
         let content;
         switch (type) {
             case 'lost':
@@ -272,17 +447,18 @@ export default function App() {
                 content = { title: 'Post a Found Item', children: <FoundItemForm onReportSubmitted={handleReportSubmitted} handleClose={handleCloseModal} /> };
                 break;
             case 'auth':
-                content = { title: null, children: <AuthForm onAuthSuccess={handleAuthSuccess} handleClose={handleCloseModal} /> };
+                content = { title: null, children: <AuthForm onAuthSuccess={handleAuthSuccess} handleShowModal={handleShowModal} handleClose={handleCloseModal} /> };
                 break;
             case 'editProfile':
-                content = { 
-                    title: null, 
-                    children: <EditProfileForm 
-                                user={user} 
-                                onUpdateSuccess={handleProfileUpdateSuccess} 
-                                handleClose={handleCloseModal} 
-                              /> 
-                };
+                content = { title: null, children: <EditProfileForm user={user} onUpdateSuccess={handleProfileUpdateSuccess} handleClose={handleCloseModal} /> };
+                break;
+            // NEW: Case for the "Forgot Password" form
+            case 'forgotPassword':
+                content = { title: 'Reset Password', children: <ForgotPasswordForm handleShowModal={handleShowModal} handleClose={handleCloseModal} /> };
+                break;
+            // NEW: Case for the "Reset Password" form (receives email via `data`)
+            case 'resetPassword':
+                content = { title: 'Enter New Password', children: <ResetPasswordForm email={data.email} handleClose={handleCloseModal} /> };
                 break;
             default:
                 return;
@@ -335,3 +511,4 @@ export default function App() {
         </>
     );
 }
+

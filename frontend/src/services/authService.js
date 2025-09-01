@@ -36,6 +36,60 @@
 // src/services/authService.js
 
 
+// import api from './api';
+
+// const signup = (userData) => {
+//   return api.post('/auth/signup', userData);
+// };
+
+// const login = async (email, password) => {
+//   const response = await api.post('/auth/login', { email, password });
+  
+//   if (response.data.token && response.data.user) {
+//     localStorage.setItem('token', response.data.token);
+//     localStorage.setItem('user', JSON.stringify(response.data.user));
+//   }
+//   return response.data;
+// };
+
+// const logout = () => {
+//   localStorage.removeItem('user');
+//   localStorage.removeItem('token');
+// };
+
+// const getCurrentUser = () => {
+//   const userStr = localStorage.getItem('user');
+//   if (userStr) return JSON.parse(userStr);
+//   return null;
+// };
+
+// // Function to fetch user data using the token
+// const getMe = async () => {
+//     const response = await api.get('/auth/me');
+//     return response.data;
+// };
+
+// const updateProfile = async (userData) => {
+//     const response = await api.put('/auth/profile', userData);
+//     if (response.data.user) {
+//         localStorage.setItem('user', JSON.stringify(response.data.user));
+//     }
+//     return response.data;
+// };
+
+// const authService = {
+//   signup,
+//   login,
+//   logout,
+//   getCurrentUser,
+//   getMe,
+//   updateProfile,
+// };
+
+// export default authService;
+
+
+
 import api from './api';
 
 const signup = (userData) => {
@@ -63,7 +117,7 @@ const getCurrentUser = () => {
   return null;
 };
 
-// Function to fetch user data using the token
+// Function to fetch user data using a token (for Google login)
 const getMe = async () => {
     const response = await api.get('/auth/me');
     return response.data;
@@ -77,6 +131,16 @@ const updateProfile = async (userData) => {
     return response.data;
 };
 
+// --- NEW: Password Reset Functions ---
+
+const forgotPassword = (email) => {
+    return api.post('/auth/forgot-password', { email });
+};
+
+const resetPassword = (data) => {
+    return api.post('/auth/reset-password', data);
+};
+
 const authService = {
   signup,
   login,
@@ -84,6 +148,8 @@ const authService = {
   getCurrentUser,
   getMe,
   updateProfile,
+  forgotPassword,
+  resetPassword,
 };
 
 export default authService;

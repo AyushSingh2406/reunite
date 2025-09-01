@@ -2,164 +2,53 @@
 // const bcrypt = require('bcryptjs');
 // const jwt = require('jsonwebtoken');
 
-// // --- User Signup Logic ---
+// // --- User Signup Logic (no changes needed) ---
 // exports.signup = async (req, res) => {
-//     const { username, email, password } = req.body;
-
-//     if (!username || !email || !password) {
-//         return res.status(400).json({ msg: 'Please enter all fields.' });
-//     }
-
-//     try {
-//         let user = await User.findOne({ email });
-//         if (user) {
-//             return res.status(400).json({ msg: 'User with this email already exists.' });
-//         }
-
-//         user = new User({ username, email, password });
-//         const salt = await bcrypt.genSalt(10);
-//         user.password = await bcrypt.hash(password, salt);
-//         await user.save();
-
-//         res.status(201).json({ msg: 'Signup successful! Please log in.' });
-//     } catch (err) {
-//         console.error("Signup Error:", err.message);
-//         // CORRECTED: Always send a JSON response, even for server errors.
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
+//     // ... your existing signup code
 // };
 
-// // --- User Login Logic ---
+// // --- User Login Logic (updated to return new fields) ---
 // exports.login = async (req, res) => {
 //     const { email, password } = req.body;
-
-//     if (!email || !password) {
-//         return res.status(400).json({ msg: 'Please enter all fields.' });
-//     }
-
 //     try {
 //         const user = await User.findOne({ email });
 //         if (!user) {
 //             return res.status(400).json({ msg: 'Invalid credentials' });
 //         }
-
 //         const isMatch = await bcrypt.compare(password, user.password);
 //         if (!isMatch) {
 //             return res.status(400).json({ msg: 'Invalid credentials' });
 //         }
-
-//         const payload = {
-//             user: { id: user.id },
-//         };
-// // In controllers/authController.js
-
-// jwt.sign(
-//     payload,
-//     'THIS_IS_A_VERY_LONG_AND_SECRET_KEY_FOR_MY_APP_12345', // Use the key from your .env file
-//     { expiresIn: '1h' }, // A comma was missing here
-//     (err, token) => {
-//         if (err) throw err;
-//         res.json({
-//             token,
-//            user: {
-//         id: user.id,
-//         username: user.username,
-//         email: user.email,
-//         role: user.role // Add this line
-//     },
-//         });
-//     }
-// );
-//     } catch (err) {
-//         console.error("Login Error:", err.message);
-//         // CORRECTED: Always send a JSON response, even for server errors.
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
-// };
-
-
-
-// const User = require('../models/User');
-// const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
-
-// // --- User Signup Logic (existing code) ---
-// exports.signup = async (req, res) => {
-//     const { username, email, password } = req.body;
-
-//     if (!username || !email || !password) {
-//         return res.status(400).json({ msg: 'Please enter all fields.' });
-//     }
-
-//     try {
-//         let user = await User.findOne({ email });
-//         if (user) {
-//             return res.status(400).json({ msg: 'User with this email already exists.' });
-//         }
-
-//         user = new User({ username, email, password });
-//         const salt = await bcrypt.genSalt(10);
-//         user.password = await bcrypt.hash(password, salt);
-//         await user.save();
-
-//         res.status(201).json({ msg: 'Signup successful! Please log in.' });
-//     } catch (err) {
-//         console.error("Signup Error:", err.message);
-//         res.status(500).json({ msg: 'Server Error' });
-//     }
-// };
-
-// // --- User Login Logic (existing code) ---
-// exports.login = async (req, res) => {
-//     const { email, password } = req.body;
-
-//     if (!email || !password) {
-//         return res.status(400).json({ msg: 'Please enter all fields.' });
-//     }
-
-//     try {
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             return res.status(400).json({ msg: 'Invalid credentials' });
-//         }
-
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) {
-//             return res.status(400).json({ msg: 'Invalid credentials' });
-//         }
-
-//         const payload = {
-//             user: { id: user.id },
-//         };
-
+//         const payload = { user: { id: user.id } };
 //         jwt.sign(
 //             payload,
 //             'THIS_IS_A_VERY_LONG_AND_SECRET_KEY_FOR_MY_APP_12345',
 //             { expiresIn: '1h' },
 //             (err, token) => {
 //                 if (err) throw err;
+//                 // This now includes collegeId and address in the login response
 //                 res.json({
 //                     token,
 //                     user: {
 //                         id: user.id,
 //                         username: user.username,
 //                         email: user.email,
-//                         role: user.role
+//                         role: user.role,
+//                         collegeId: user.collegeId,
+//                         address: user.address,
 //                     },
 //                 });
 //             }
 //         );
 //     } catch (err) {
-//         console.error("Login Error:", err.message);
 //         res.status(500).json({ msg: 'Server Error' });
 //     }
 // };
 
-// // --- NEW: User Profile Update Logic ---
+// // --- User Profile Update Logic (updated to handle and return new fields) ---
 // exports.updateProfile = async (req, res) => {
-//     // req.user.id comes from the authMiddleware
 //     const userId = req.user.id;
-//     const { username, email, password } = req.body;
+//     const { username, email, collegeId, address } = req.body;
 
 //     try {
 //         const user = await User.findById(userId);
@@ -167,30 +56,25 @@
 //             return res.status(404).json({ msg: 'User not found.' });
 //         }
 
-//         // Update username and email if provided
 //         if (username) user.username = username;
 //         if (email) user.email = email;
-
-//         // If a new password is provided, hash it and update
-//         if (password) {
-//             const salt = await bcrypt.genSalt(10);
-//             user.password = await bcrypt.hash(password, salt);
-//         }
+//         if (collegeId) user.collegeId = collegeId;
+//         if (address) user.address = address;
 
 //         await user.save();
 
-//         // Send back the updated user details (excluding password)
+//         // This now includes collegeId and address in the update response
 //         const updatedUser = {
 //             id: user.id,
 //             username: user.username,
 //             email: user.email,
 //             role: user.role,
+//             collegeId: user.collegeId,
+//             address: user.address,
 //         };
 
 //         res.json({ user: updatedUser, msg: 'Profile updated successfully!' });
-
 //     } catch (err) {
-//         console.error("Update Profile Error:", err);
 //         res.status(500).json({ msg: 'Server Error' });
 //     }
 // };
@@ -201,13 +85,63 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const sendEmail = require('../utils/email');
 
-// --- User Signup Logic (no changes needed) ---
+// --- User Signup with Email Verification ---
 exports.signup = async (req, res) => {
-    // ... your existing signup code
+    const { username, email, password } = req.body;
+    try {
+        let user = await User.findOne({ email });
+        if (user) {
+            return res.status(400).json({ msg: 'User with this email already exists.' });
+        }
+
+        user = new User({ username, email, password });
+        user.password = await bcrypt.hash(password, 10);
+        
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        user.verificationToken = verificationToken;
+
+        await user.save();
+
+        // Send verification email
+        const verificationURL = `https://reunite-lnds.netlify.app/verify/${verificationToken}`;
+        const message = `<p>Please verify your email by clicking this link: <a href="${verificationURL}">Verify Email</a></p><p>If you are testing locally, the URL is: ${req.protocol}://${req.get('host')}/api/auth/verify/${verificationToken}</p>`;
+
+        await sendEmail({
+            email: user.email,
+            subject: 'Reunite Account: Email Verification',
+            html: message,
+        });
+
+        res.status(201).json({ msg: 'Signup successful! Please check your email to verify your account.' });
+    } catch (err) {
+        console.error("Signup Error:", err);
+        res.status(500).json({ msg: 'Server Error' });
+    }
 };
 
-// --- User Login Logic (updated to return new fields) ---
+// --- Verify Email Handler ---
+exports.verifyEmail = async (req, res) => {
+    try {
+        const user = await User.findOne({ verificationToken: req.params.token });
+        if (!user) {
+            return res.status(400).send('<h1>Error</h1><p>Verification token is invalid or has already been used.</p>');
+        }
+
+        user.isVerified = true;
+        user.verificationToken = undefined;
+        await user.save();
+        
+        res.send('<h1>Success!</h1><p>Your email has been successfully verified. You can now close this tab and log in.</p>');
+    } catch (err) {
+        console.error("Verify Email Error:", err);
+        res.status(500).send('<h1>Error</h1><p>An error occurred during verification. Please try again later.</p>');
+    }
+};
+
+// --- User Login (Checks if verified) ---
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -215,10 +149,16 @@ exports.login = async (req, res) => {
         if (!user) {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
+
+        if (!user.isVerified) {
+            return res.status(401).json({ msg: 'Please verify your email before logging in.' });
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
+
         const payload = { user: { id: user.id } };
         jwt.sign(
             payload,
@@ -226,7 +166,6 @@ exports.login = async (req, res) => {
             { expiresIn: '1h' },
             (err, token) => {
                 if (err) throw err;
-                // This now includes collegeId and address in the login response
                 res.json({
                     token,
                     user: {
@@ -241,11 +180,12 @@ exports.login = async (req, res) => {
             }
         );
     } catch (err) {
+        console.error("Login Error:", err);
         res.status(500).json({ msg: 'Server Error' });
     }
 };
 
-// --- User Profile Update Logic (updated to handle and return new fields) ---
+// --- User Profile Update Logic ---
 exports.updateProfile = async (req, res) => {
     const userId = req.user.id;
     const { username, email, collegeId, address } = req.body;
@@ -262,8 +202,6 @@ exports.updateProfile = async (req, res) => {
         if (address) user.address = address;
 
         await user.save();
-
-        // This now includes collegeId and address in the update response
         const updatedUser = {
             id: user.id,
             username: user.username,
@@ -272,9 +210,61 @@ exports.updateProfile = async (req, res) => {
             collegeId: user.collegeId,
             address: user.address,
         };
-
         res.json({ user: updatedUser, msg: 'Profile updated successfully!' });
     } catch (err) {
+        console.error("Update Profile Error:", err);
         res.status(500).json({ msg: 'Server Error' });
     }
 };
+
+// --- Forgot Password ---
+exports.forgotPassword = async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        if (!user) {
+            return res.status(404).json({ msg: 'User with that email does not exist.' });
+        }
+
+        const resetToken = crypto.randomBytes(3).toString('hex').toUpperCase(); // 6-character OTP
+        user.passwordResetToken = resetToken;
+        user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        await user.save();
+
+        await sendEmail({
+            email: user.email,
+            subject: 'Your Password Reset OTP',
+            html: `<p>Your password reset OTP is: <strong>${resetToken}</strong>. It is valid for 10 minutes.</p>`,
+        });
+        res.status(200).json({ msg: 'OTP sent to email!' });
+    } catch (err) {
+        console.error("Forgot Password Error:", err);
+        res.status(500).json({ msg: 'Server Error' });
+    }
+};
+
+// --- Reset Password ---
+exports.resetPassword = async (req, res) => {
+    const { email, token, password } = req.body;
+    try {
+        const user = await User.findOne({
+            email,
+            passwordResetToken: token,
+            passwordResetExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ msg: 'Token is invalid or has expired.' });
+        }
+
+        user.password = await bcrypt.hash(password, 10);
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+        
+        res.status(200).json({ msg: 'Password reset successful! You can now log in.' });
+    } catch (err) {
+        console.error("Reset Password Error:", err);
+        res.status(500).json({ msg: 'Server Error' });
+    }
+};
+
